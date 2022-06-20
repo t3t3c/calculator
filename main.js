@@ -27,4 +27,4 @@ const operate = function (a, b, operator) {
   }
 };
 
-console.log(operate(1,2, '+'));
+console.log(operate(1, 2, "/"));
