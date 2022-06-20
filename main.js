@@ -1,10 +1,15 @@
-function isTheSame(str1, str2) {
-  return str1 === str2;
-}
+const add = function (a, b) {
+  return a + b;
+};
 
-console.log(
-  isTheSame(
-    "git@github.com:t3t3c/calculator.git",
-    "git@github.com:t3t3c/calculator.git"
-  )
-);
+const subtract = function (a, b) {
+  return a - b;
+};
+
+const multiply = function (a, b) {
+  return a * b;
+};
+
+const divide = function (a, b) {
+  return a / b;
+};
