@@ -1,4 +1,21 @@
-.display {
-  background-color: aquamarine;
-  width: fit-content;
+.body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
+
+.display {
+  background-color: rgb(129, 168, 129);
+  width: 100px;
+  height: 20px;
+}
+
+
+/* .frame {
+  width: 200px;
+  border: 10px gray solid;
+  background-color: #888;
+  display: flex;
+  justify-content: space-around;
+  align-items: space-around;
+} */
