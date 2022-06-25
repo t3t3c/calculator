@@ -1,12 +1,11 @@
-const calculatorMemory = {
+const calMemory = {
   operand: "",
   operator: "",
-  currentResult: "0",
-  nowShowResult: false,
+  currentResult: "",
 };
 
 const add = function (a, b) {
-  return a + b;
+  return Number(a) + Number(b);
 };
 
 const subtract = function (a, b) {
@@ -31,64 +30,79 @@ const operate = function (a, b, operator) {
       return multiply(a, b);
     case "/":
       return divide(a, b);
+    case "=":
+      return calMemory.currentResult;
   }
 };
 
-function displayAdd(event) {
+function clearMemory() {
+  calMemory.operand = "";
+  calMemory.operator = "";
+  calMemory.currentResult = "";
+}
+// current result = currentresult operator operand
+
+function showResult() {
   let display = document.querySelector(".display");
-  if (calculatorMemory.nowShowResult) {
-    if (calculatorMemory.currentResult === "0") {
-      calculatorMemory.currentResult = "";
-    }
-    calculatorMemory.currentResult += event.target.dataset.number;
-    display.textContent = calculatorMemory.currentResult;
-  } else {
-    calculatorMemory.operand += event.target.dataset.number;
-    display.textContent = calculatorMemory.operand;
-  }
+  display.innerHTML = calMemory.currentResult;
 }
 
-function displayClear() {
+function refreshDisplay() {
   let display = document.querySelector(".display");
-  display.textContent = calculatorMemory.currentResult;
-  // resets all memory to default state:
-  calculatorMemory.operand = "";
-  calculatorMemory.operator = "";
-  calculatorMemory.currentResult = "0";
-  calculatorMemory.showResult = false;
+  display.innerHTML = calMemory.operand;
 }
 
-function displayResult(result) {
-  let display = document.querySelector(".display");
-  display.textContent = result;
+function addNumber(event) {
+  calMemory.operand += event.target.dataset.number;
 }
+
+function addOperator(event) {
+  calMemory.operator = event.target.dataset.operator;
+}
+
+// FUNCTIONS FOR BUTTONS:
 
 function activateButtons() {
   let numberButtons = document.querySelectorAll("[data-number]");
   numberButtons.forEach((button) => {
-    button.addEventListener("click", displayAdd);
+    button.addEventListener("click", (event) => {
+      addNumber(event);
+      refreshDisplay();
+    });
   });
 }
 
 function activateClear() {
   let clearButton = document.querySelector(".clear");
-  clearButton.addEventListener("click", displayClear);
+  clearButton.addEventListener("click", () => {
+    clearMemory();
+    refreshDisplay();
+  });
 }
 
 function activateOperators() {
   let operatorButtons = document.querySelectorAll("[data-operator]");
   operatorButtons.forEach((button) => {
     button.addEventListener("click", (event) => {
-      calculatorMemory.operator = event.target.dataset.operator;
-      calculatorMemory.nowShowResult = !calculatorMemory.nowShowResult;
+      if (calMemory.currentResult === "") {
+        // it is the first calculation after clear so we don't have a second number to do the calculation yet
+        calMemory.currentResult = calMemory.operand; // save the first number as currentResult
+      } else {
+        // currentResult is always => currentResult = currentResult operator operand
+        calMemory.currentResult = operate(
+          calMemory.currentResult,
+          calMemory.operand,
+          calMemory.operator
+        );
+      }
+      addOperator(event); // adds clicked operator for next operation
+      calMemory.operand = ""; // reset operand so we can make new one
+      showResult();
     });
   });
 }
 
-// Create the functions that populate the display when you click the number buttons… you should be storing the ‘display value’ in a variable somewhere for use in the next step.
-
 console.log(operate(1, 2, "/"));
-displayClear();
 activateButtons();
 activateClear();
 activateOperators();
@@ -105,7 +119,6 @@ activateOperators();
 
 // gameplan:
 // 1. rozwiazac problem globalna lista/ ew. obiektem
-// 2.1 obejrzec tutorial jak zrobic kalkulator
 // 2. rozwiazac problem uzywajac currying??
 
 // poprzedni numer ma sie wyswietlac tak dlugo jak nie kliknalem nastepnego! gamechanger
