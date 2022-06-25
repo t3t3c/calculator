@@ -1,7 +1,8 @@
 const calculatorMemory = {
-  firstOperand: null,
-  secondOperand: null,
-  operator: null,
+  operand: "",
+  operator: "",
+  currentResult: "0",
+  nowShowResult: false,
 };
 
 const add = function (a, b) {
@@ -35,12 +36,26 @@ const operate = function (a, b, operator) {
 
 function displayAdd(event) {
   let display = document.querySelector(".display");
-  display.textContent += event.target.dataset.number;
+  if (calculatorMemory.nowShowResult) {
+    if (calculatorMemory.currentResult === "0") {
+      calculatorMemory.currentResult = "";
+    }
+    calculatorMemory.currentResult += event.target.dataset.number;
+    display.textContent = calculatorMemory.currentResult;
+  } else {
+    calculatorMemory.operand += event.target.dataset.number;
+    display.textContent = calculatorMemory.operand;
+  }
 }
 
 function displayClear() {
   let display = document.querySelector(".display");
-  display.textContent = "0";
+  display.textContent = calculatorMemory.currentResult;
+  // resets all memory to default state:
+  calculatorMemory.operand = "";
+  calculatorMemory.operator = "";
+  calculatorMemory.currentResult = "0";
+  calculatorMemory.showResult = false;
 }
 
 function displayResult(result) {
@@ -63,8 +78,9 @@ function activateClear() {
 function activateOperators() {
   let operatorButtons = document.querySelectorAll("[data-operator]");
   operatorButtons.forEach((button) => {
-    button.addEventListener("click", (e) => {
-      chosenOperator = e.target.dataset.operator;
+    button.addEventListener("click", (event) => {
+      calculatorMemory.operator = event.target.dataset.operator;
+      calculatorMemory.nowShowResult = !calculatorMemory.nowShowResult;
     });
   });
 }
@@ -72,6 +88,7 @@ function activateOperators() {
 // Create the functions that populate the display when you click the number buttons… you should be storing the ‘display value’ in a variable somewhere for use in the next step.
 
 console.log(operate(1, 2, "/"));
+displayClear();
 activateButtons();
 activateClear();
 activateOperators();
@@ -90,3 +107,25 @@ activateOperators();
 // 1. rozwiazac problem globalna lista/ ew. obiektem
 // 2.1 obejrzec tutorial jak zrobic kalkulator
 // 2. rozwiazac problem uzywajac currying??
+
+// poprzedni numer ma sie wyswietlac tak dlugo jak nie kliknalem nastepnego! gamechanger
+
+// 0 - result
+// click 7
+// 7 - operand
+// click 2
+// 72 - operand
+// click +
+// 72 - result
+//click 3
+// 3 - operand
+//click +
+// 75 - result
+//click 4
+// 4 - operand
+// click +
+// 79 - result
+// click 8
+// 8 - operand
+// click +
+// 87 - result
