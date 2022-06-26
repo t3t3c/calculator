@@ -2,6 +2,7 @@ const calMemory = {
   operand: "",
   operator: "",
   currentResult: "",
+  hasDot: false,
 };
 
 const add = function (a, b) {
@@ -17,6 +18,9 @@ const multiply = function (a, b) {
 };
 
 const divide = function (a, b) {
+  if (b == "0") {
+    return "divBy0";
+  }
   return a / b;
 };
 
@@ -39,16 +43,27 @@ function clearMemory() {
   calMemory.operand = "";
   calMemory.operator = "";
   calMemory.currentResult = "";
+  resetDot();
 }
 // current result = currentresult operator operand
 
 function showResult() {
-  let display = document.querySelector(".display");
-  display.innerHTML = calMemory.currentResult;
+  const display = document.querySelector(".display");
+  if (calMemory.currentResult === "divBy0") {
+    // if divided by 0
+    display.innerHTML = "BOOM!";
+    clearMemory();
+  } else {
+    // converts string to a number, rounds the number to fixed number of decimals
+    // ex. 0.54 = 0.540000
+    // and converts it to number again to drop the unnecessary 0s
+    roundedNumber = Number(Number(calMemory.currentResult).toFixed(6));
+    display.innerHTML = roundedNumber;
+  }
 }
 
 function refreshDisplay() {
-  let display = document.querySelector(".display");
+  const display = document.querySelector(".display");
   display.innerHTML = calMemory.operand;
 }
 
@@ -60,12 +75,19 @@ function addOperator(event) {
   calMemory.operator = event.target.dataset.operator;
 }
 
+function deleteNumber(event) {
+  calMemory.operand.slice(-1);
+  console.log(calMemory.operand);
+}
+
 // FUNCTIONS FOR BUTTONS:
 
 function activateButtons() {
-  let numberButtons = document.querySelectorAll("[data-number]");
+  const numberButtons = document.querySelectorAll("[data-number]");
   numberButtons.forEach((button) => {
     button.addEventListener("click", (event) => {
+      if (event.target.dataset.number === ".") event.target.disabled = true;
+      // because we can only write one dot per number
       addNumber(event);
       refreshDisplay();
     });
@@ -73,15 +95,21 @@ function activateButtons() {
 }
 
 function activateClear() {
-  let clearButton = document.querySelector(".clear");
+  const clearButton = document.querySelector(".clear");
   clearButton.addEventListener("click", () => {
     clearMemory();
     refreshDisplay();
   });
 }
 
+function resetDot() {
+  // lets us write dot one more time
+  dotButton = document.querySelector(".dot");
+  dotButton.disabled = false;
+}
+
 function activateOperators() {
-  let operatorButtons = document.querySelectorAll("[data-operator]");
+  const operatorButtons = document.querySelectorAll("[data-operator]");
   operatorButtons.forEach((button) => {
     button.addEventListener("click", (event) => {
       if (calMemory.currentResult === "") {
@@ -97,9 +125,18 @@ function activateOperators() {
       }
       addOperator(event); // adds clicked operator for next operation
       calMemory.operand = ""; // reset operand so we can make new one
+      resetDot(); // we can write dots again, because it is time for new number
       showResult();
     });
   });
+}
+
+function activateBackspace() {
+  const backspace = document.querySelector(".backspace");
+  backspace.addEventListener("click", () => {
+    console.log("ziom");
+  });
+  refreshDisplay();
 }
 
 console.log(operate(1, 2, "/"));
