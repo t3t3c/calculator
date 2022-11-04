@@ -57,7 +57,7 @@ function showResult() {
     // converts string to a number, rounds the number to fixed number of decimals
     // ex. 0.54 = 0.540000
     // and converts it to number again to drop the unnecessary 0s
-    roundedNumber = Number(Number(calMemory.currentResult).toFixed(6));
+    const roundedNumber = Number(Number(calMemory.currentResult).toFixed(6));
     display.innerHTML = roundedNumber;
   }
 }
@@ -76,7 +76,7 @@ function addOperator(event) {
 }
 
 function deleteNumber(event) {
-  calMemory.operand.slice(-1);
+  calMemory.operand = calMemory.operand.slice(0, -1);
   console.log(calMemory.operand);
 }
 
@@ -133,16 +133,18 @@ function activateOperators() {
 
 function activateBackspace() {
   const backspace = document.querySelector(".backspace");
-  backspace.addEventListener("click", () => {
+  backspace.addEventListener("click", (event) => {
     console.log("ziom");
+    deleteNumber(event);
+    refreshDisplay();
   });
-  refreshDisplay();
 }
 
 console.log(operate(1, 2, "/"));
 activateButtons();
 activateClear();
 activateOperators();
+activateBackspace();
 
 // 1. wyswietl 1sza liczbe
 // 2. klinknij operator (wyswietla sie dalej 1sza licza (wynik dotychczasowego klikania))
